@@ -1,6 +1,7 @@
 package ag.service;
 
 import ag.models.Position;
+import ag.models.Vote;
 import ag.models.Voting;
 import ag.repository.VotingRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,5 +22,8 @@ public class VotingService {
     }
     public Integer addPosition(Position position) throws Throwable {
         return votingRepository.addPosition(position);
+    }
+    public Integer addVote(Vote vote) throws Throwable {
+        return votingRepository.addVote(vote);
     }
 }

@@ -39,7 +39,6 @@ public class JwtUtil {
         Date expiredDate = new Date(issueDate.getTime() + jwtLifetime.toMillis());
         return JWT.create()
                 .withSubject(userDetails.getUsername())
-                .withClaim("role", getRoleFromUserDetails(userDetails).ordinal())
                 .withIssuedAt(issueDate)
                 .withExpiresAt(expiredDate)
                 .sign(Algorithm.HMAC256(secret));

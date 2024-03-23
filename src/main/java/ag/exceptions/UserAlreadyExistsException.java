@@ -4,10 +4,9 @@ import org.springframework.security.authentication.BadCredentialsException;
 
 import javax.naming.AuthenticationException;
 
-public class UserAlreadyExistsException extends BadCredentialsException {
+public class UserAlreadyExistsException extends Exception {
     private final String message;
     public UserAlreadyExistsException() {
-        super(null);
         message = null;
     }
     public UserAlreadyExistsException(String message) {

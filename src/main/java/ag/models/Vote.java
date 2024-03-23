@@ -3,12 +3,14 @@ package ag.models;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-@Getter
 @Data
 @AllArgsConstructor
-public class Position {
+@NoArgsConstructor
+@Getter
+public class Vote {
     private Integer id;
-    private String description;
-    private Integer voting_id;
+    private Integer position_id;
+    private Integer user_id;
 }
