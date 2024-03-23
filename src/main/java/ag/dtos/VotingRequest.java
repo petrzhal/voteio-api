@@ -8,4 +8,6 @@ import lombok.Getter;
 public class VotingRequest {
     private String title;
     private String description;
+    private String category;
+    private String type;
 }

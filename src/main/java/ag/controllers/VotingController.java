@@ -5,6 +5,7 @@ import ag.exceptions.ApplicationError;
 import ag.models.Position;
 import ag.models.Vote;
 import ag.models.Voting;
+import ag.models.VotingType;
 import ag.service.UserService;
 import ag.service.VotingService;
 import ag.token.JwtUtil;
@@ -36,7 +37,14 @@ public class VotingController {
         Integer id;
         try {
             jwtUtil.checkExpiration(accessToken);
-            id = votingService.addVoting(new Voting(null, votingRequest.getTitle(), votingRequest.getDescription()));
+            id = votingService.addVoting(
+                    Voting.builder()
+                            .title(votingRequest.getTitle())
+                            .description(votingRequest.getDescription())
+                            .category(votingRequest.getCategory())
+                            .type(VotingType.valueOf(votingRequest.getType().toUpperCase()))
+                            .build()
+            );
         } catch (TokenExpiredException e) {
             return new ResponseEntity<>(
                     new ApplicationError(
@@ -74,7 +82,13 @@ public class VotingController {
         Integer id;
         try {
             jwtUtil.checkExpiration(accessToken);
-            id = votingService.addPosition(new Position(null, positionRequest.getDescription(), positionRequest.getVoting_id()));
+            id = votingService.addPosition(
+                    new Position(
+                            null,
+                            positionRequest.getDescription(),
+                            positionRequest.getVoting_id()
+                    )
+            );
         } catch (TokenExpiredException e) {
             return new ResponseEntity<>(
                     new ApplicationError(
@@ -104,6 +118,7 @@ public class VotingController {
         }
         return ResponseEntity.ok(new PositionResponse(id));
     }
+
     @PostMapping("api/vote")
     public ResponseEntity<?> vote(@RequestHeader("Authorization") String accessToken, @RequestBody VoteRequest voteRequest) {
         Integer id;

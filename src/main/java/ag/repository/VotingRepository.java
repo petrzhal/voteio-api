@@ -14,6 +14,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.logging.Logger;
 
 @Repository
@@ -28,11 +29,13 @@ public class VotingRepository {
         try {
             jdbcTemplate.update(connection -> {
                 PreparedStatement ps = connection.prepareStatement(
-                        "INSERT INTO voting (title, description) VALUES (?, ?)",
+                        "INSERT INTO voting (title, description, category, type) VALUES (?, ?, ?, ?)",
                         Statement.RETURN_GENERATED_KEYS
                 );
                 ps.setString(1, voting.getTitle());
                 ps.setString(2, voting.getDescription());
+                ps.setString(3, voting.getCategory());
+                ps.setObject(4, voting.getType().toString().toLowerCase(), Types.OTHER);
                 return ps;
             }, keyHolder);
             var keys = keyHolder.getKeyList();
