@@ -26,4 +26,7 @@ public class VotingService {
     public Integer addVote(Vote vote) throws Throwable {
         return votingRepository.addVote(vote);
     }
+    public void deleteVoting(Integer voting_id) throws Throwable {
+        votingRepository.deleteVoting(voting_id);
+    }
 }

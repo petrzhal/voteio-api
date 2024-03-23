@@ -1,6 +1,7 @@
 package ag.service;
 
 import ag.exceptions.UserAlreadyExistsException;
+import ag.models.Role;
 import ag.models.User;
 import ag.repository.UserRepository;
 import ag.token.JwtUtil;
@@ -53,5 +54,8 @@ public class UserService implements UserDetailsService {
                         List.of(new SimpleGrantedAuthority(user.getRole().toString()))
                 )
         );
+    }
+    public Role getRole(String login) {
+        return userRepository.getRole(login);
     }
 }

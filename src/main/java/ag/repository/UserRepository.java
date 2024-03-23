@@ -53,4 +53,10 @@ public class UserRepository {
         }
         return Optional.of(users.get(0));
     }
+    @Transactional
+    public Role getRole(String login) {
+        var role = jdbcTemplate.queryForObject("SELECT role FROM account WHERE login=?", String.class, login);
+        assert role != null;
+        return Role.valueOf(role.toUpperCase());
+    }
 }

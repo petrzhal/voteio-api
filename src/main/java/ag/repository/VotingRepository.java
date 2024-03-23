@@ -40,7 +40,7 @@ public class VotingRepository {
             }, keyHolder);
             var keys = keyHolder.getKeyList();
             id = (Integer)keys.get(0).get("id");
-        } catch (Exception e) {
+        } catch (Throwable e) {
             logger.severe(e.getMessage());
             throw e.getCause();
         }
@@ -61,7 +61,7 @@ public class VotingRepository {
             }, keyHolder);
             var keys = keyHolder.getKeyList();
             id = (Integer)keys.get(0).get("id");
-        } catch (Exception e) {
+        } catch (Throwable e) {
             logger.severe(e.getMessage());
             throw e.getCause();
         }
@@ -82,10 +82,21 @@ public class VotingRepository {
             }, keyHolder);
             var keys = keyHolder.getKeyList();
             id = (Integer)keys.get(0).get("id");
-        } catch (Exception e) {
+        } catch (Throwable e) {
             logger.severe(e.getMessage());
             throw e.getCause();
         }
         return id;
+    }
+    @Transactional
+    public void deleteVoting(Integer voting_id) throws Throwable {
+        try {
+            jdbcTemplate.update("DELETE FROM vote WHERE position_id=(SELECT id FROM position WHERE voting_id=?)", voting_id);
+            jdbcTemplate.update("DELETE FROM position WHERE voting_id=?", voting_id);
+            jdbcTemplate.update("DELETE FROM voting WHERE id=?", voting_id);
+        } catch (Throwable e) {
+            logger.severe(e.getMessage());
+            throw e.getCause();
+        }
     }
 }

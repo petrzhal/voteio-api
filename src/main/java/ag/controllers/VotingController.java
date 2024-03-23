@@ -2,10 +2,7 @@ package ag.controllers;
 
 import ag.dtos.*;
 import ag.exceptions.ApplicationError;
-import ag.models.Position;
-import ag.models.Vote;
-import ag.models.Voting;
-import ag.models.VotingType;
+import ag.models.*;
 import ag.service.UserService;
 import ag.service.VotingService;
 import ag.token.JwtUtil;
@@ -120,7 +117,10 @@ public class VotingController {
     }
 
     @PostMapping("api/vote")
-    public ResponseEntity<?> vote(@RequestHeader("Authorization") String accessToken, @RequestBody VoteRequest voteRequest) {
+    public ResponseEntity<?> vote(
+            @RequestHeader("Authorization") String accessToken,
+            @RequestBody VoteRequest voteRequest
+    ) {
         Integer id;
         try {
             jwtUtil.checkExpiration(accessToken);
@@ -157,5 +157,51 @@ public class VotingController {
             );
         }
         return ResponseEntity.ok(new VoteResponse(id));
+    }
+    @DeleteMapping("api/deleteVoting")
+    public ResponseEntity<?> deleteVoting(
+            @RequestHeader("Authorization") String accessToken,
+            @RequestBody DeleteVotingRequest deleteVotingRequest
+    ) {
+        try {
+            jwtUtil.checkExpiration(accessToken);
+            if (userService.getRole(jwtUtil.getLogin(accessToken)) != Role.ADMIN) {
+                return new ResponseEntity<>(
+                        new ApplicationError(
+                                HttpStatus.FORBIDDEN.value(),
+                                "user is not admin"
+                        ),
+                        HttpStatus.FORBIDDEN
+                );
+            }
+            votingService.deleteVoting(deleteVotingRequest.getVoting_id());
+        } catch (TokenExpiredException e) {
+            return new ResponseEntity<>(
+                    new ApplicationError(
+                            HttpStatus.UNAUTHORIZED.value(),
+                            "token expired"
+                    ),
+                    HttpStatus.UNAUTHORIZED
+            );
+        } catch (JWTVerificationException e) {
+            logger.severe(e.getMessage());
+            return new ResponseEntity<>(
+                    new ApplicationError(
+                            HttpStatus.UNAUTHORIZED.value(),
+                            "invalid token"
+                    ),
+                    HttpStatus.UNAUTHORIZED
+            );
+        } catch (Throwable e) {
+            logger.severe(e.getMessage());
+            return new ResponseEntity<>(
+                    new ApplicationError(
+                            HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                            "failed to delete voting"
+                    ),
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
+        return ResponseEntity.ok("voting deleted");
     }
 }

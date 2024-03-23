@@ -26,14 +26,6 @@ public class JwtUtil {
     @Value("${jwt.lifetime}")
     private Duration jwtLifetime;
 
-    public Role getRoleFromUserDetails(UserDetails userDetails) {
-        Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
-        for (GrantedAuthority authority : authorities) {
-            String roleString = authority.getAuthority();
-            return Role.valueOf(roleString);
-        }
-        return null;
-    }
     public String generateToken(UserDetails userDetails) {
         Date issueDate = new Date();
         Date expiredDate = new Date(issueDate.getTime() + jwtLifetime.toMillis());
