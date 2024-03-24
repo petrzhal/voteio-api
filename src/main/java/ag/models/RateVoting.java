@@ -2,16 +2,16 @@ package ag.models;
 
 import lombok.*;
 
-@Getter
-@Data
-@NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 @Builder
-public class Voting {
+public class RateVoting {
     private Integer id;
     private String title;
     private String description;
     private String category;
     private VotingType type;
     private Integer creator_id;
+    private Integer votes_num;
 }

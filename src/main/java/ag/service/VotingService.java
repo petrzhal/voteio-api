@@ -1,11 +1,14 @@
 package ag.service;
 
 import ag.models.Position;
+import ag.models.RateVoting;
 import ag.models.Vote;
 import ag.models.Voting;
 import ag.repository.VotingRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -23,10 +26,31 @@ public class VotingService {
     public Integer addPosition(Position position) throws Throwable {
         return votingRepository.addPosition(position);
     }
-    public Integer addVote(Vote vote) throws Throwable {
-        return votingRepository.addVote(vote);
+    public Integer addVote(Vote vote, Integer voting_id) throws Throwable {
+        return votingRepository.addVote(vote, voting_id);
     }
     public void deleteVoting(Integer voting_id) throws Throwable {
         votingRepository.deleteVoting(voting_id);
+    }
+    public String getCreator(Integer voting_id) throws Throwable {
+        return votingRepository.getCreator(voting_id);
+    }
+    public List<Voting> getVotingFromCategory(String category) {
+        return votingRepository.getVotingFromCategory(category);
+    }
+    public List<Voting> getCreatedVoting(Integer user_id) {
+        return votingRepository.getCreatedVoting(user_id);
+    }
+
+    public List<Voting> getTakenPartVoting(Integer user_id) {
+        return votingRepository.getTakenPartVoting(user_id);
+    }
+
+    public List<RateVoting> getVotingRating() {
+        return votingRepository.getVotingRating();
+    }
+
+    public List<Position> getPositionsForVoting(Integer voting_id) {
+        return votingRepository.getPositionsForVoting(voting_id);
     }
 }

@@ -1,37 +1,16 @@
 package ag.config;
 
 import ag.service.UserService;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtParser;
-import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.annotation.web.configurers.CorsConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.HttpStatusEntryPoint;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.logout.LogoutFilter;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
-import org.springframework.security.web.csrf.CsrfAuthenticationStrategy;
-import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
-import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
-import org.springframework.security.web.csrf.XorCsrfTokenRequestAttributeHandler;
-import org.springframework.security.web.util.matcher.AndRequestMatcher;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.stereotype.Component;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -43,14 +22,13 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 
 @EnableWebSecurity
 @RequiredArgsConstructor
-//@EnableGlobalMethodSecurity(securedEnabled = true)
 @Component
 public class SecurityConfig {
     private final UserService userService;
     private final CorsConfigurationSource corsConfigurationSource;
 
     @Bean
-    CorsConfigurationSource corsConfigurationSource() {
+    public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedOriginPattern("*");
         configuration.setAllowedMethods(Arrays.asList("GET","POST","PUT","PATCH","DELETE","OPTIONS"));
@@ -69,10 +47,15 @@ public class SecurityConfig {
                         .requestMatchers("api/login").permitAll()
                         .requestMatchers("api/logout").permitAll()
                         .requestMatchers("api/register").permitAll()
-                        .requestMatchers("api/addVoting").permitAll()
-                        .requestMatchers("api/addPosition").permitAll()
-                        .requestMatchers("api/vote").permitAll()
-                        .requestMatchers("api/deleteVoting").permitAll()
+                        .requestMatchers("api/voting/add").permitAll()
+                        .requestMatchers("api/voting/{voting_id}/addPosition").permitAll()
+                        .requestMatchers("api/voting/{voting_id}/position/{position_id}/vote").permitAll()
+                        .requestMatchers("api/voting/{voting_id}/delete").permitAll()
+                        .requestMatchers("api/voting/category/{category}").permitAll()
+                        .requestMatchers("api/voting/by/{user_id}").permitAll()
+                        .requestMatchers("api/voting/participated/{user_id}").permitAll()
+                        .requestMatchers("api/voting/rating").permitAll()
+                        .requestMatchers("api/voting/{voting_id}/getPositions").permitAll()
                 )
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
                 .build();

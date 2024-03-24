@@ -7,5 +7,4 @@ import lombok.Getter;
 @Getter
 public class PositionRequest {
     private String description;
-    private Integer voting_id;
 }
