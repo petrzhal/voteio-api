@@ -320,4 +320,9 @@ public class VotingController {
     public ResponseEntity<?> getPositionsForVoting(@PathVariable Integer voting_id) {
         return ResponseEntity.ok(votingService.getPositionsForVoting(voting_id));
     }
+
+    @GetMapping("api/users/rating")
+    public ResponseEntity<?> getUserRating() {
+        return ResponseEntity.ok(userService.getUserRating());
+    }
 }

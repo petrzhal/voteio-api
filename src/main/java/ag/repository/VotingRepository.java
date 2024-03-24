@@ -106,7 +106,7 @@ public class VotingRepository {
     @Transactional
     public void deleteVoting(Integer voting_id) throws Throwable {
         try {
-            jdbcTemplate.update("DELETE FROM vote WHERE position_id=(SELECT id FROM position WHERE voting_id=?)", voting_id);
+            jdbcTemplate.update("DELETE FROM vote WHERE position_id IN (SELECT id FROM position WHERE voting_id=?)", voting_id);
             jdbcTemplate.update("DELETE FROM position WHERE voting_id=?", voting_id);
             jdbcTemplate.update("DELETE FROM voting WHERE id=?", voting_id);
         } catch (Throwable e) {
@@ -164,13 +164,7 @@ public class VotingRepository {
     @Transactional
     public List<Voting> getTakenPartVoting(Integer user_id) {
         return jdbcTemplate.query(
-                """
-                             SELECT v.*\s
-                             FROM voting v
-                             JOIN position p ON v.id = p.voting_id
-                             JOIN vote vt ON p.id = vt.position_id
-                             WHERE vt.user_id = ?
-                        """,
+                "SELECT v.* FROM voting v JOIN position p ON v.id = p.voting_id JOIN vote vt ON p.id = vt.position_id WHERE vt.user_id = ?",
                 new Object[]{user_id},
                 (resultSet, rowNum) -> Voting.builder()
                         .id(resultSet.getInt("id"))

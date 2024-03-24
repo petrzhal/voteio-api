@@ -1,8 +1,7 @@
 package ag.repository;
 
 import ag.exceptions.UserAlreadyExistsException;
-import ag.models.Role;
-import ag.models.User;
+import ag.models.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -11,6 +10,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,15 +41,15 @@ public class UserRepository {
     public Optional<User> findByLogin(String login) {
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(
-                    "SELECT * FROM account WHERE login=?",
-                    new Object[]{login},
-                    (resultSet, rowNum) ->
-                            User.builder()
-                                    .id(resultSet.getInt("id"))
-                                    .login(resultSet.getString("login"))
-                                    .password(resultSet.getString("password"))
-                                    .role(Role.valueOf(resultSet.getString("role").toUpperCase()))
-                                    .build()
+                            "SELECT * FROM account WHERE login=?",
+                            new Object[]{login},
+                            (resultSet, rowNum) ->
+                                    User.builder()
+                                            .id(resultSet.getInt("id"))
+                                            .login(resultSet.getString("login"))
+                                            .password(resultSet.getString("password"))
+                                            .role(Role.valueOf(resultSet.getString("role").toUpperCase()))
+                                            .build()
                     )
             );
         } catch (EmptyResultDataAccessException e) {
@@ -62,5 +62,27 @@ public class UserRepository {
         var role = jdbcTemplate.queryForObject("SELECT role FROM account WHERE login=?", String.class, login);
         assert role != null;
         return Role.valueOf(role.toUpperCase());
+    }
+
+    @Transactional
+    public List<RateUser> getUserRating() {
+        var userList = jdbcTemplate.query(
+                "SELECT * FROM account",
+                new Object[]{},
+                (resultSet, rowNum) -> {
+                    RateUser rateUser = RateUser.builder()
+                            .id(resultSet.getInt("id"))
+                            .login(resultSet.getString("login"))
+                            .build();
+                    rateUser.setVotes_num(jdbcTemplate.queryForObject(
+                            "SELECT count(*) FROM vote WHERE user_id=?",
+                            Integer.class,
+                            rateUser.getId()
+                    ));
+                    return rateUser;
+                }
+        );
+        userList.sort(Comparator.comparing(RateUser::getVotes_num).reversed());
+        return userList;
     }
 }

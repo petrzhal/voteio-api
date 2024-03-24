@@ -1,6 +1,7 @@
 package ag.service;
 
 import ag.exceptions.UserAlreadyExistsException;
+import ag.models.RateUser;
 import ag.models.Role;
 import ag.models.User;
 import ag.repository.UserRepository;
@@ -57,5 +58,9 @@ public class UserService implements UserDetailsService {
     }
     public Role getRole(String login) {
         return userRepository.getRole(login);
+    }
+
+    public List<RateUser> getUserRating() {
+        return userRepository.getUserRating();
     }
 }

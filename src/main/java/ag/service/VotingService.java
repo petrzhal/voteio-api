@@ -1,9 +1,6 @@
 package ag.service;
 
-import ag.models.Position;
-import ag.models.RateVoting;
-import ag.models.Vote;
-import ag.models.Voting;
+import ag.models.*;
 import ag.repository.VotingRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

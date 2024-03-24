@@ -56,6 +56,7 @@ public class SecurityConfig {
                         .requestMatchers("api/voting/participated/{user_id}").permitAll()
                         .requestMatchers("api/voting/rating").permitAll()
                         .requestMatchers("api/voting/{voting_id}/getPositions").permitAll()
+                        .requestMatchers("api/users/rating").permitAll()
                 )
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
                 .build();
