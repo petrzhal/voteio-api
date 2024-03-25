@@ -50,4 +50,8 @@ public class VotingService {
     public List<Position> getPositionsForVoting(Integer voting_id) {
         return votingRepository.getPositionsForVoting(voting_id);
     }
+
+    public void addComment() {
+
+    }
 }
